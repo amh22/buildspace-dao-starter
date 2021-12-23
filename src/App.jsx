@@ -188,7 +188,7 @@ const App = () => {
     return (
       <div className='landing'>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <h1 style={{ margin: '40px 0px 10px 0px' }}>Welcome to KungPao DAO 🌶️</h1>
+          <h1 style={{ margin: '40px 0px 10px 0px' }}>Welcome to KungPao 🌶️ DAO</h1>
           <div style={{ width: '75%', margin: 'auto' }}>
             <h2 style={{ padding: '0px 40px' }}>
               A collective of purveyors of taste, with a modus operandi to bring spice back into our communities.{' '}
@@ -209,7 +209,7 @@ const App = () => {
   if (hasClaimedNFT) {
     return (
       <div className='member-page'>
-        <h1>Kang Pao 🌶️ DAO Member Page</h1>
+        <h1>KungPao 🌶️ DAO Member Page</h1>
         <h3>Congratulations on being a member</h3>
         <div>
           <div>
