@@ -376,32 +376,37 @@ const App = () => {
   // Render mint nft screen.
   return (
     <div className='mint-nft'>
-      <h1>Mint your free KungPao DAO 🌶️ Membership NFT</h1>
-      <button
-        disabled={isClaiming}
-        onClick={() => {
-          setIsClaiming(true)
-          // Call bundleDropModule.claim("0", 1) to mint nft to user's wallet.
-          bundleDropModule
-            .claim('0', 1)
-            .catch((err) => {
-              console.error('failed to claim', err)
-              setIsClaiming(false)
-            })
-            .finally(() => {
-              // Stop loading state.
-              setIsClaiming(false)
-              // Set claim state.
-              setHasClaimedNFT(true)
-              // Show user their fancy new NFT!
-              console.log(
-                `Successfully Minted! Check it our on OpenSea: https://testnets.opensea.io/assets/${bundleDropModule.address}/0`
-              )
-            })
-        }}
-      >
-        {isClaiming ? 'Minting...' : 'Mint your nft (FREE)'}
-      </button>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <h1 style={{ margin: '40px 0px 10px 0px' }}>Mint your free KungPao 🌶️ DAO Membership NFT</h1>
+
+        <div style={{ width: '75%', margin: 'auto' }}>
+          <button
+            disabled={isClaiming}
+            onClick={() => {
+              setIsClaiming(true)
+              // Call bundleDropModule.claim("0", 1) to mint nft to user's wallet.
+              bundleDropModule
+                .claim('0', 1)
+                .catch((err) => {
+                  console.error('failed to claim', err)
+                  setIsClaiming(false)
+                })
+                .finally(() => {
+                  // Stop loading state.
+                  setIsClaiming(false)
+                  // Set claim state.
+                  setHasClaimedNFT(true)
+                  // Show user their fancy new NFT!
+                  console.log(
+                    `Successfully Minted! Check it our on OpenSea: https://testnets.opensea.io/assets/${bundleDropModule.address}/0`
+                  )
+                })
+            }}
+          >
+            {isClaiming ? 'Minting...' : 'Mint your nft (FREE)'}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
