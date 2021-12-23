@@ -210,7 +210,7 @@ const App = () => {
     return (
       <div className='member-page'>
         <h1>Kang Pao 🌶️ DAO Member Page</h1>
-        <p>Congratulations on being a member</p>
+        <h3>Congratulations on being a member</h3>
         <div>
           <div>
             <h2>Member List</h2>
@@ -320,7 +320,7 @@ const App = () => {
             >
               {proposals.map((proposal, index) => (
                 <div key={proposal.proposalId} className='card'>
-                  <h5>{proposal.description}</h5>
+                  <h5 style={{ wordBreak: 'break-word' }}>{proposal.description}</h5>
                   <div>
                     {proposal.votes.map((vote) => (
                       <div key={vote.type}>
@@ -341,7 +341,9 @@ const App = () => {
               <button disabled={isVoting || hasVoted} type='submit'>
                 {isVoting ? 'Voting...' : hasVoted ? 'You Already Voted' : 'Submit Votes'}
               </button>
-              <small>This will trigger multiple transactions that you will need to sign.</small>
+              <small style={{ padding: '0px 0px 40px 0px' }}>
+                This will trigger multiple transactions that you will need to sign.
+              </small>
             </form>
           </div>
         </div>
