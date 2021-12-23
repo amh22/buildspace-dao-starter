@@ -186,10 +186,19 @@ const App = () => {
   if (!address) {
     return (
       <div className='landing'>
-        <h1>Welcome to KungPao DAO 🌶️</h1>
-        <button onClick={() => connectWallet('injected')} className='btn-hero'>
-          Connect your wallet
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <h1 style={{ margin: '40px 0px 10px 0px' }}>Welcome to KungPao DAO 🌶️</h1>
+          <div style={{ width: '75%', margin: 'auto' }}>
+            <h2 style={{ padding: '0px 40px' }}>
+              A collective of purveyors of taste, with a modus operandi to bring spice back into our communities.{' '}
+            </h2>
+          </div>
+          <div style={{ width: '75%', margin: 'auto' }}>
+            <button onClick={() => connectWallet('injected')} className='btn-hero'>
+              Connect your wallet
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
