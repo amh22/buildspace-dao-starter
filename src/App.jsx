@@ -173,6 +173,7 @@ const App = () => {
 
   // Handle unsupported network
   if (error && error.name === 'UnsupportedChainIdError') {
+    console.log('Unsupported Network. Please connect to Rinkeby')
     return (
       <div className='unsupported-network'>
         <h2>Please connect to Rinkeby</h2>
@@ -363,7 +364,6 @@ const App = () => {
   }
 
   // Render mint nft screen.
-  // Render mint nft screen.
   return (
     <div className='mint-nft'>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -393,7 +393,7 @@ const App = () => {
                 })
             }}
           >
-            {isClaiming ? 'Minting...' : 'Mint your nft (FREE)'}
+            {isClaiming ? 'Minting...' : 'Mint your NFT (Free)'}
           </button>
         </div>
       </div>
