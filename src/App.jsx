@@ -1,6 +1,8 @@
 import { ethers } from 'ethers'
 import { ThirdwebSDK } from '@3rdweb/sdk'
 import { useEffect, useMemo, useState } from 'react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import styled from 'styled-components'
 
 // import thirdweb
 import { useWeb3 } from '@3rdweb/hooks'
@@ -35,6 +37,31 @@ const App = () => {
   const [memberTokenAmounts, setMemberTokenAmounts] = useState({})
   // The array holding all of our members addresses.
   const [memberAddresses, setMemberAddresses] = useState([])
+
+  // Copy to Clipboard
+  const [copied, setCopied] = useState(false)
+
+  const onCopy = () => {
+    setCopied(true)
+    setTimeout(() => {
+      setCopied(false)
+    }, 3000)
+  }
+
+  const Button = styled.button`
+    background-color: ${(props) => (props.clicked ? '#121212' : '#ffdb58')};
+    color: ${(props) => (props.clicked ? '#ffffff' : 'brown')};
+    margin: 10px 0 10px 0px;
+    padding: 4px 4px;
+    text-transform: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: ${(props) => (props.clicked ? 'not-allowed' : 'pointer')};
+    &:hover {
+      background-color: #121212;
+      color: #fff;
+    }
+  `
 
   // VOTING
   const [proposals, setProposals] = useState([])
@@ -227,6 +254,7 @@ const App = () => {
         <div>
           <div>
             <h2>Governance Token</h2>
+
             <table className='card'>
               <thead>
                 <tr>
@@ -241,6 +269,22 @@ const App = () => {
                 </tr>
               </tbody>
             </table>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+              }}
+            >
+              <h4 style={{ margin: '0 0 5px 0', padding: '0 0 0 0' }}>Token contract address:</h4>
+              <p style={{ margin: '0 5px 0 0', padding: '0 0 0 0', fontSize: '14px' }}>
+                0xA0771B18898c090F8f563b4F0955A89a4e6DC541
+              </p>
+              <CopyToClipboard onCopy={onCopy} text='0xA0771B18898c090F8f563b4F0955A89a4e6DC541'>
+                <Button clicked={copied ? true : false}>{copied ? 'Copied' : 'Copy'}</Button>
+              </CopyToClipboard>
+            </div>
             <h2>Member List</h2>
             <table className='card'>
               <thead>
