@@ -211,6 +211,17 @@ const App = () => {
       <div className='member-page'>
         <h1>KungPao 🌶️ DAO Member Page</h1>
         <h3>Congratulations on being a member</h3>
+        <h3 style={{ padding: '0 0 20px 0px' }}>
+          Check out your membership NFT on{' '}
+          <a
+            style={{ color: 'yellow' }}
+            href={`https://testnets.opensea.io/assets/${bundleDropModule.address}/0`}
+            target='_blank'
+            rel='noreferrer'
+          >
+            OpenSea
+          </a>{' '}
+        </h3>
         <div>
           <div>
             <h2>Member List</h2>
@@ -377,7 +388,7 @@ const App = () => {
                   setHasClaimedNFT(true)
                   // Show user their fancy new NFT!
                   console.log(
-                    `Successfully Minted! Check it our on OpenSea: https://testnets.opensea.io/assets/${bundleDropModule.address}/0`
+                    `Successfully Minted! Check it out on OpenSea: https://testnets.opensea.io/assets/${bundleDropModule.address}/0`
                   )
                 })
             }}
