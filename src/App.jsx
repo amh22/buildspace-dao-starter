@@ -13,6 +13,7 @@ const bundleDropModule = sdk.getBundleDropModule('0x1d1C51d64Bb8111b61C60Be8CC19
 
 // We can grab a reference to our ERC-20 contract.
 const tokenModule = sdk.getTokenModule('0xA0771B18898c090F8f563b4F0955A89a4e6DC541')
+console.log('🚀 ~ file: App.jsx ~ line 16 ~ tokenModule', tokenModule)
 
 const voteModule = sdk.getVoteModule('0xf45a4B6cE10CcEE45721Fd8616528C388d907E73')
 
@@ -225,6 +226,21 @@ const App = () => {
         </h3>
         <div>
           <div>
+            <h2>Governance Token</h2>
+            <table className='card'>
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Max. Issuance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>$TASTY</td>
+                  <td>1,000,000</td>
+                </tr>
+              </tbody>
+            </table>
             <h2>Member List</h2>
             <table className='card'>
               <thead>
@@ -245,6 +261,7 @@ const App = () => {
               </tbody>
             </table>
           </div>
+
           <div>
             <h2>Active Proposals</h2>
             <form
