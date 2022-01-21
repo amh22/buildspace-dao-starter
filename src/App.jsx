@@ -151,7 +151,7 @@ const App = () => {
     if (tokenModule) {
       getBalance()
     }
-  }, [tokenModule])
+  }, [])
 
   // This useEffect grabs all our the addresses of our members holding our NFT.
   useEffect(() => {
