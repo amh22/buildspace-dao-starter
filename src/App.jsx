@@ -1,6 +1,9 @@
 import { ethers } from 'ethers'
 import { ThirdwebSDK } from '@3rdweb/sdk'
 import { useEffect, useMemo, useState } from 'react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import styled from 'styled-components'
+import { LoadingIndicator } from './Components/LoadingIndicator'
 
 // import thirdweb
 import { useWeb3 } from '@3rdweb/hooks'
@@ -21,6 +24,22 @@ const App = () => {
   const { connectWallet, address, error, provider } = useWeb3()
   console.log('👋 Address:', address)
 
+  // We use this to throw an alert when a user tries to connected without the MetaMask browser extension
+  const checkWalletIsConnected = async () => {
+    try {
+      const { ethereum } = window
+
+      if (!ethereum) {
+        alert('You need to get MetaMask!')
+        return
+      } else {
+        connectWallet('injected')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // The signer is required to sign transactions on the blockchain.
   // Without it we can only read data, not write.
   const signer = provider ? provider.getSigner() : undefined
@@ -34,6 +53,52 @@ const App = () => {
   const [memberTokenAmounts, setMemberTokenAmounts] = useState({})
   // The array holding all of our members addresses.
   const [memberAddresses, setMemberAddresses] = useState([])
+
+  // Hold the Treasury Token Balance from our Token Module
+  const [balance, setBalance] = useState(0)
+
+  // Copy to Clipboard
+  const [copied, setCopied] = useState(false)
+
+  const onCopy = () => {
+    setCopied(true)
+    setTimeout(() => {
+      setCopied(false)
+    }, 3000)
+  }
+
+  const Button = styled.button`
+    background-color: ${(props) => (props.clicked ? '#121212' : '#ffdb58')};
+    color: ${(props) => (props.clicked ? '#ffffff' : 'brown')};
+    margin: 10px 0 10px 0px;
+    padding: 4px 4px;
+    text-transform: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: ${(props) => (props.clicked ? 'not-allowed' : 'pointer')};
+    &:hover {
+      background-color: #121212;
+      color: #fff;
+    }
+  `
+
+  const VoteButton = styled.button`
+    background-color: ${(props) => (props.voted ? '#121212' : '#ffdb58')};
+    color: ${(props) => (props.voted ? '#ffffff' : 'brown')};
+    border: none;
+    font-weight: bold;
+    font-family: inherit;
+    margin: 20px 10px 10px 10px;
+    padding: 1.2rem 4rem;
+    text-transform: uppercase;
+    border-radius: 3rem;
+    font-size: 1.2rem;
+    cursor: ${(props) => (props.voted ? 'not-allowed' : 'pointer')};
+    &:hover {
+      background-color: #121212;
+      color: #fff;
+    }
+  `
 
   // VOTING
   const [proposals, setProposals] = useState([])
@@ -49,8 +114,13 @@ const App = () => {
     voteModule
       .getAll()
       .then((proposals) => {
+        const openProposals = proposals.filter(function (proposal) {
+          return proposal.state === 1
+        })
+        console.log('🚀 Open / Active Proposals', openProposals)
+
         // Set state!
-        setProposals(proposals)
+        setProposals(openProposals)
         console.log('🌈 Proposals:', proposals)
       })
       .catch((err) => {
@@ -86,6 +156,19 @@ const App = () => {
   const shortenAddress = (str) => {
     return str.substring(0, 6) + '...' + str.substring(str.length - 4)
   }
+
+  // Get the Treasury balance from our token module
+  useEffect(() => {
+    const getBalance = async () => {
+      const tokenBalance = await tokenModule.balanceOf('0xf45a4b6ce10ccee45721fd8616528c388d907e73')
+      // const displayBal = tokenBalance.displayValue
+      setBalance(tokenBalance)
+    }
+
+    if (tokenModule) {
+      getBalance()
+    }
+  }, [])
 
   // This useEffect grabs all our the addresses of our members holding our NFT.
   useEffect(() => {
@@ -147,7 +230,7 @@ const App = () => {
   }, [signer])
 
   useEffect(() => {
-    // If they don't have an connected wallet, exit!
+    // If they don't have a connected wallet, exit!
     if (!address) {
       return
     }
@@ -172,7 +255,10 @@ const App = () => {
   }, [address])
 
   // Handle unsupported network
-  if (error && error.name === 'UnsupportedChainIdError') {
+  if (error && (error.name === 'UnsupportedChainIdError' || error.name === 't')) {
+    // console.log('🚀 Error', error)
+    // console.log('🚀  Error name', error.name)
+    console.log('Unsupported Network. Please connect to Rinkeby')
     return (
       <div className='unsupported-network'>
         <h2>Please connect to Rinkeby</h2>
@@ -195,7 +281,7 @@ const App = () => {
             </h2>
           </div>
           <div style={{ width: '75%', margin: 'auto' }}>
-            <button onClick={() => connectWallet('injected')} className='btn-hero'>
+            <button onClick={() => checkWalletIsConnected()} className='btn-hero'>
               Connect your wallet
             </button>
           </div>
@@ -211,8 +297,53 @@ const App = () => {
       <div className='member-page'>
         <h1>KungPao 🌶️ DAO Member Page</h1>
         <h3>Congratulations on being a member</h3>
-        <div>
+        <h3 style={{ padding: '0 0 20px 0px' }}>
+          Check out your membership NFT on{' '}
+          <a
+            style={{ color: 'yellow' }}
+            href={`https://testnets.opensea.io/assets/${bundleDropModule.address}/0`}
+            target='_blank'
+            rel='noreferrer'
+          >
+            OpenSea
+          </a>{' '}
+        </h3>
+        <div style={{ paddingBottom: '60px' }}>
           <div>
+            <h2>Governance Token</h2>
+
+            <table className='card'>
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Current Supply</th>
+                  <th>Treasury Holdings</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>$TASTY</td>
+                  <td>1,000,000</td>
+                  <td>{balance.displayValue}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+              }}
+            >
+              <h4 style={{ margin: '0 0 5px 0', padding: '0 0 0 0' }}>Token contract address:</h4>
+              <p style={{ margin: '0 5px 0 0', padding: '0 0 0 0', fontSize: '14px' }}>
+                0xA0771B18898c090F8f563b4F0955A89a4e6DC541
+              </p>
+              <CopyToClipboard onCopy={onCopy} text='0xA0771B18898c090F8f563b4F0955A89a4e6DC541'>
+                <Button clicked={copied ? true : false}>{copied ? 'Copied' : 'Copy'}</Button>
+              </CopyToClipboard>
+            </div>
             <h2>Member List</h2>
             <table className='card'>
               <thead>
@@ -233,6 +364,7 @@ const App = () => {
               </tbody>
             </table>
           </div>
+
           <div>
             <h2>Active Proposals</h2>
             <form
@@ -277,6 +409,7 @@ const App = () => {
                         // before voting we first need to check whether the proposal is open for voting
                         // we first need to get the latest state of the proposal
                         const proposal = await voteModule.get(vote.proposalId)
+                        console.log('🚀 ~ file: App.jsx ~ line 388 ~ votes.map ~ proposal', proposal)
                         // then we check if the proposal is open for voting (state === 1 means it is open)
                         if (proposal.state === 1) {
                           // if it is open for voting, we'll vote on it
@@ -318,30 +451,38 @@ const App = () => {
                 }
               }}
             >
-              {proposals.map((proposal, index) => (
-                <div key={proposal.proposalId} className='card'>
-                  <h5 style={{ wordBreak: 'break-word' }}>{proposal.description}</h5>
-                  <div>
-                    {proposal.votes.map((vote) => (
-                      <div key={vote.type}>
-                        <input
-                          type='radio'
-                          id={proposal.proposalId + '-' + vote.type}
-                          name={proposal.proposalId}
-                          value={vote.type}
-                          //default the "abstain" vote to chedked
-                          defaultChecked={vote.type === 2}
-                        />
-                        <label htmlFor={proposal.proposalId + '-' + vote.type}>{vote.label}</label>
-                      </div>
-                    ))}
+              {proposals.map((proposal, index) => {
+                return (
+                  <div key={proposal.proposalId} className='card'>
+                    <h5 style={{ wordBreak: 'break-word' }}>{proposal.description}</h5>
+                    <div>
+                      {proposal.votes.map((vote) => (
+                        <div key={vote.type}>
+                          <input
+                            type='radio'
+                            id={proposal.proposalId + '-' + vote.type}
+                            name={proposal.proposalId}
+                            value={vote.type}
+                            //default the "abstain" vote to checked
+                            defaultChecked={vote.type === 2}
+                          />
+                          <label htmlFor={proposal.proposalId + '-' + vote.type}>{vote.label}</label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                )
+              })}
+              <h4 style={{ margin: 'auto', padding: '10px 0 0 0', color: 'yellow' }}>
+                Note: Voting will remain open until 05:00 UTC
+              </h4>
+              <VoteButton voted={hasVoted ? true : false} disabled={isVoting || hasVoted} type='submit'>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {isVoting ? 'Voting...' : hasVoted ? 'You Already Voted' : 'Submit Votes'}
+                  {isVoting && <LoadingIndicator />}
                 </div>
-              ))}
-              <button disabled={isVoting || hasVoted} type='submit'>
-                {isVoting ? 'Voting...' : hasVoted ? 'You Already Voted' : 'Submit Votes'}
-              </button>
-              <small style={{ padding: '0px 0px 40px 0px' }}>
+              </VoteButton>
+              <small style={{ margin: '0px 0px 20px 0px' }}>
                 This will trigger multiple transactions that you will need to sign.
               </small>
             </form>
@@ -351,7 +492,6 @@ const App = () => {
     )
   }
 
-  // Render mint nft screen.
   // Render mint nft screen.
   return (
     <div className='mint-nft'>
@@ -377,12 +517,15 @@ const App = () => {
                   setHasClaimedNFT(true)
                   // Show user their fancy new NFT!
                   console.log(
-                    `Successfully Minted! Check it our on OpenSea: https://testnets.opensea.io/assets/${bundleDropModule.address}/0`
+                    `Successfully Minted! Check it out on OpenSea: https://testnets.opensea.io/assets/${bundleDropModule.address}/0`
                   )
                 })
             }}
           >
-            {isClaiming ? 'Minting...' : 'Mint your nft (FREE)'}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {isClaiming ? 'Minting...' : 'Mint your NFT (Free)'}
+              {isClaiming && <LoadingIndicator />}
+            </div>
           </button>
         </div>
       </div>
