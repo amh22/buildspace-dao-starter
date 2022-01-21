@@ -15,7 +15,6 @@ const bundleDropModule = sdk.getBundleDropModule('0x1d1C51d64Bb8111b61C60Be8CC19
 
 // We can grab a reference to our ERC-20 contract.
 const tokenModule = sdk.getTokenModule('0xA0771B18898c090F8f563b4F0955A89a4e6DC541')
-console.log('🚀 ~ file: App.jsx ~ line 16 ~ tokenModule', tokenModule)
 
 const voteModule = sdk.getVoteModule('0xf45a4B6cE10CcEE45721Fd8616528C388d907E73')
 
@@ -37,6 +36,9 @@ const App = () => {
   const [memberTokenAmounts, setMemberTokenAmounts] = useState({})
   // The array holding all of our members addresses.
   const [memberAddresses, setMemberAddresses] = useState([])
+
+  // Hold the Treasury Token Balance from our Token Module
+  const [balance, setBalance] = useState(0)
 
   // Copy to Clipboard
   const [copied, setCopied] = useState(false)
@@ -114,6 +116,18 @@ const App = () => {
   const shortenAddress = (str) => {
     return str.substring(0, 6) + '...' + str.substring(str.length - 4)
   }
+
+  // Get the Treasury balance from our token module
+  useEffect(() => {
+    const getBalance = async () => {
+      const tokenBalance = await tokenModule.balanceOf('0xf45a4b6ce10ccee45721fd8616528c388d907e73')
+      setBalance(tokenBalance.displayValue)
+    }
+
+    if (tokenModule) {
+      getBalance()
+    }
+  }, [tokenModule])
 
   // This useEffect grabs all our the addresses of our members holding our NFT.
   useEffect(() => {
@@ -259,13 +273,15 @@ const App = () => {
               <thead>
                 <tr>
                   <th>Symbol</th>
-                  <th>Max. Issuance</th>
+                  <th>Current Supply</th>
+                  <th>Treasury Holdings</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>$TASTY</td>
                   <td>1,000,000</td>
+                  <td>{balance}</td>
                 </tr>
               </tbody>
             </table>
