@@ -71,7 +71,7 @@ const App = () => {
     border: none;
     font-weight: bold;
     font-family: inherit;
-    margin: 40px 10px;
+    margin: 20px 10px 10px 10px;
     padding: 1.2rem 4rem;
     text-transform: uppercase;
     border-radius: 3rem;
@@ -97,8 +97,12 @@ const App = () => {
     voteModule
       .getAll()
       .then((proposals) => {
+        const openProposals = proposals.filter(function (proposal) {
+          return proposal.state === 1
+        })
+        console.log('🚀 ~ file: App.jsx ~ line 103 ~ openProposals ~ openProposals', openProposals)
         // Set state!
-        setProposals(proposals)
+        setProposals(openProposals)
         console.log('🌈 Proposals:', proposals)
       })
       .catch((err) => {
@@ -139,7 +143,8 @@ const App = () => {
   useEffect(() => {
     const getBalance = async () => {
       const tokenBalance = await tokenModule.balanceOf('0xf45a4b6ce10ccee45721fd8616528c388d907e73')
-      setBalance(tokenBalance.displayValue)
+      const displayBal = tokenBalance.displayValue
+      setBalance(displayBal)
     }
 
     if (tokenModule) {
@@ -283,7 +288,7 @@ const App = () => {
             OpenSea
           </a>{' '}
         </h3>
-        <div>
+        <div style={{ paddingBottom: '60px' }}>
           <div>
             <h2>Governance Token</h2>
 
@@ -384,6 +389,7 @@ const App = () => {
                         // before voting we first need to check whether the proposal is open for voting
                         // we first need to get the latest state of the proposal
                         const proposal = await voteModule.get(vote.proposalId)
+                        console.log('🚀 ~ file: App.jsx ~ line 388 ~ votes.map ~ proposal', proposal)
                         // then we check if the proposal is open for voting (state === 1 means it is open)
                         if (proposal.state === 1) {
                           // if it is open for voting, we'll vote on it
@@ -425,30 +431,35 @@ const App = () => {
                 }
               }}
             >
-              {proposals.map((proposal, index) => (
-                <div key={proposal.proposalId} className='card'>
-                  <h5 style={{ wordBreak: 'break-word' }}>{proposal.description}</h5>
-                  <div>
-                    {proposal.votes.map((vote) => (
-                      <div key={vote.type}>
-                        <input
-                          type='radio'
-                          id={proposal.proposalId + '-' + vote.type}
-                          name={proposal.proposalId}
-                          value={vote.type}
-                          //default the "abstain" vote to checked
-                          defaultChecked={vote.type === 2}
-                        />
-                        <label htmlFor={proposal.proposalId + '-' + vote.type}>{vote.label}</label>
-                      </div>
-                    ))}
+              {proposals.map((proposal, index) => {
+                return (
+                  <div key={proposal.proposalId} className='card'>
+                    <h5 style={{ wordBreak: 'break-word' }}>{proposal.description}</h5>
+                    <div>
+                      {proposal.votes.map((vote) => (
+                        <div key={vote.type}>
+                          <input
+                            type='radio'
+                            id={proposal.proposalId + '-' + vote.type}
+                            name={proposal.proposalId}
+                            value={vote.type}
+                            //default the "abstain" vote to checked
+                            defaultChecked={vote.type === 2}
+                          />
+                          <label htmlFor={proposal.proposalId + '-' + vote.type}>{vote.label}</label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
+              <h4 style={{ margin: 'auto', padding: '10px 0 0 0', color: 'yellow' }}>
+                Note: Voting will remain open until 05:00 UTC
+              </h4>
               <VoteButton voted={hasVoted ? true : false} disabled={isVoting || hasVoted} type='submit'>
                 {isVoting ? 'Voting...' : hasVoted ? 'You Already Voted' : 'Submit Votes'}
               </VoteButton>
-              <small style={{ padding: '0px 0px 40px 0px' }}>
+              <small style={{ margin: '0px 0px 20px 0px' }}>
                 This will trigger multiple transactions that you will need to sign.
               </small>
             </form>
