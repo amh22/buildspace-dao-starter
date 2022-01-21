@@ -65,6 +65,24 @@ const App = () => {
     }
   `
 
+  const VoteButton = styled.button`
+    background-color: ${(props) => (props.voted ? '#121212' : '#ffdb58')};
+    color: ${(props) => (props.voted ? '#ffffff' : 'brown')};
+    border: none;
+    font-weight: bold;
+    font-family: inherit;
+    margin: 40px 10px;
+    padding: 1.2rem 4rem;
+    text-transform: uppercase;
+    border-radius: 3rem;
+    font-size: 1.2rem;
+    cursor: ${(props) => (props.voted ? 'not-allowed' : 'pointer')};
+    &:hover {
+      background-color: #121212;
+      color: #fff;
+    }
+  `
+
   // VOTING
   const [proposals, setProposals] = useState([])
   const [isVoting, setIsVoting] = useState(false)
@@ -189,7 +207,7 @@ const App = () => {
   }, [signer])
 
   useEffect(() => {
-    // If they don't have an connected wallet, exit!
+    // If they don't have a connected wallet, exit!
     if (!address) {
       return
     }
@@ -418,7 +436,7 @@ const App = () => {
                           id={proposal.proposalId + '-' + vote.type}
                           name={proposal.proposalId}
                           value={vote.type}
-                          //default the "abstain" vote to chedked
+                          //default the "abstain" vote to checked
                           defaultChecked={vote.type === 2}
                         />
                         <label htmlFor={proposal.proposalId + '-' + vote.type}>{vote.label}</label>
@@ -427,9 +445,9 @@ const App = () => {
                   </div>
                 </div>
               ))}
-              <button disabled={isVoting || hasVoted} type='submit'>
+              <VoteButton voted={hasVoted ? true : false} disabled={isVoting || hasVoted} type='submit'>
                 {isVoting ? 'Voting...' : hasVoted ? 'You Already Voted' : 'Submit Votes'}
-              </button>
+              </VoteButton>
               <small style={{ padding: '0px 0px 40px 0px' }}>
                 This will trigger multiple transactions that you will need to sign.
               </small>
