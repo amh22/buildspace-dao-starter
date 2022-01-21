@@ -255,6 +255,8 @@ const App = () => {
 
   // Handle unsupported network
   if (error && error.name === 'UnsupportedChainIdError') {
+    console.log('🚀 ~ file: App.jsx ~ line 258 ~ App ~ error.name', error.name)
+    console.log('🚀 ~ file: App.jsx ~ line 258 ~ App ~ error', error)
     console.log('Unsupported Network. Please connect to Rinkeby')
     return (
       <div className='unsupported-network'>
