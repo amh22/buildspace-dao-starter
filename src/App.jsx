@@ -160,8 +160,8 @@ const App = () => {
   useEffect(() => {
     const getBalance = async () => {
       const tokenBalance = await tokenModule.balanceOf('0xf45a4b6ce10ccee45721fd8616528c388d907e73')
-      const displayBal = tokenBalance.displayValue
-      setBalance(displayBal)
+      // const displayBal = tokenBalance.displayValue
+      setBalance(tokenBalance)
     }
 
     if (tokenModule) {
@@ -323,7 +323,7 @@ const App = () => {
                 <tr>
                   <td>$TASTY</td>
                   <td>1,000,000</td>
-                  <td>{balance}</td>
+                  <td>{balance.displayValue}</td>
                 </tr>
               </tbody>
             </table>
