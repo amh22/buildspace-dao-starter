@@ -3,6 +3,7 @@ import { ThirdwebSDK } from '@3rdweb/sdk'
 import { useEffect, useMemo, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import styled from 'styled-components'
+import { LoadingIndicator } from './Components/LoadingIndicator'
 
 // import thirdweb
 import { useWeb3 } from '@3rdweb/hooks'
@@ -476,7 +477,10 @@ const App = () => {
                 Note: Voting will remain open until 05:00 UTC
               </h4>
               <VoteButton voted={hasVoted ? true : false} disabled={isVoting || hasVoted} type='submit'>
-                {isVoting ? 'Voting...' : hasVoted ? 'You Already Voted' : 'Submit Votes'}
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {isVoting ? 'Voting...' : hasVoted ? 'You Already Voted' : 'Submit Votes'}
+                  {isVoting && <LoadingIndicator />}
+                </div>
               </VoteButton>
               <small style={{ margin: '0px 0px 20px 0px' }}>
                 This will trigger multiple transactions that you will need to sign.
@@ -518,7 +522,10 @@ const App = () => {
                 })
             }}
           >
-            {isClaiming ? 'Minting...' : 'Mint your NFT (Free)'}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {isClaiming ? 'Minting...' : 'Mint your NFT (Free)'}
+              {isClaiming && <LoadingIndicator />}
+            </div>
           </button>
         </div>
       </div>
