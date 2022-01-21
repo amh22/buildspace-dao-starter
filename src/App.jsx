@@ -23,6 +23,22 @@ const App = () => {
   const { connectWallet, address, error, provider } = useWeb3()
   console.log('👋 Address:', address)
 
+  // We use this to throw an alert when a user tries to connected without the MetaMask browser extension
+  const checkWalletIsConnected = async () => {
+    try {
+      const { ethereum } = window
+
+      if (!ethereum) {
+        alert('You need to get MetaMask!')
+        return
+      } else {
+        connectWallet('injected')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // The signer is required to sign transactions on the blockchain.
   // Without it we can only read data, not write.
   const signer = provider ? provider.getSigner() : undefined
@@ -262,7 +278,7 @@ const App = () => {
             </h2>
           </div>
           <div style={{ width: '75%', margin: 'auto' }}>
-            <button onClick={() => connectWallet('injected')} className='btn-hero'>
+            <button onClick={() => checkWalletIsConnected()} className='btn-hero'>
               Connect your wallet
             </button>
           </div>
