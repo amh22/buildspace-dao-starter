@@ -100,7 +100,8 @@ const App = () => {
         const openProposals = proposals.filter(function (proposal) {
           return proposal.state === 1
         })
-        console.log('🚀 ~ file: App.jsx ~ line 103 ~ openProposals ~ openProposals', openProposals)
+        console.log('🚀 Open / Active Proposals', openProposals)
+
         // Set state!
         setProposals(openProposals)
         console.log('🌈 Proposals:', proposals)
