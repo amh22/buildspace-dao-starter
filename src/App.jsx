@@ -22,6 +22,7 @@ const App = () => {
   // Use the connectWallet hook thirdweb gives us.
   const { connectWallet, address, error, provider } = useWeb3()
   console.log('🚀 ~ file: App.jsx ~ line 24 ~ App ~ error', error)
+  console.log('🚀 ~ file: App.jsx ~ line 24 ~ App ~ error.name', error.name)
   console.log('👋 Address:', address)
 
   // We use this to throw an alert when a user tries to connected without the MetaMask browser extension
