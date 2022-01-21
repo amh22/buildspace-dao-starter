@@ -21,8 +21,6 @@ const voteModule = sdk.getVoteModule('0xf45a4B6cE10CcEE45721Fd8616528C388d907E73
 const App = () => {
   // Use the connectWallet hook thirdweb gives us.
   const { connectWallet, address, error, provider } = useWeb3()
-  console.log('🚀 ~ file: App.jsx ~ line 24 ~ App ~ error', error)
-  // console.log('error Name', error.name)
   console.log('👋 Address:', address)
 
   // We use this to throw an alert when a user tries to connected without the MetaMask browser extension
@@ -257,8 +255,8 @@ const App = () => {
 
   // Handle unsupported network
   if (error && (error.name === 'UnsupportedChainIdError' || error.name === 't')) {
-    console.log('🚀 ~ file: App.jsx ~ line 258 ~ App ~ error', error)
-    console.log('🚀 ~ file: App.jsx ~ line 258 ~ App ~ error.name', error.name)
+    // console.log('🚀 Error', error)
+    // console.log('🚀  Error name', error.name)
     console.log('Unsupported Network. Please connect to Rinkeby')
     return (
       <div className='unsupported-network'>
