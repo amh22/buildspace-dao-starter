@@ -22,7 +22,7 @@ const App = () => {
   // Use the connectWallet hook thirdweb gives us.
   const { connectWallet, address, error, provider } = useWeb3()
   console.log('🚀 ~ file: App.jsx ~ line 24 ~ App ~ error', error)
-  console.log('🚀 ~ file: App.jsx ~ line 24 ~ App ~ error.name', error.name)
+  // console.log('error Name', error.name)
   console.log('👋 Address:', address)
 
   // We use this to throw an alert when a user tries to connected without the MetaMask browser extension
@@ -256,9 +256,10 @@ const App = () => {
   }, [address])
 
   // Handle unsupported network
-  if (error && error.name === 'UnsupportedChainIdError') {
-    console.log('🚀 ~ file: App.jsx ~ line 258 ~ App ~ error.name', error.name)
+  // if (error && error.name === 'UnsupportedChainIdError') {
+  if (error) {
     console.log('🚀 ~ file: App.jsx ~ line 258 ~ App ~ error', error)
+    console.log('🚀 ~ file: App.jsx ~ line 258 ~ App ~ error.name', error.name)
     console.log('Unsupported Network. Please connect to Rinkeby')
     return (
       <div className='unsupported-network'>
